@@ -98,5 +98,52 @@ ADD CONSTRAINT fk_issued_status
 FOREIGN KEY (issued_id)
 REFERENCES issued_status(issued_id);
 
+---
+SELECT * FROM books;
+SELECT * FROM branch;
+SELECT * FROM employees;
+SELECT * FROM issued_status;
+SELECT * FROM return_status;
+---
 
+-- Project Task
 
+-- Task 1. "978-1-60129-456-2', 'To Kill a Mockingbird', 'Classic', 6.00, 'yes', 'Harper Lee', 'J.B. Lippincott & Co.')"
+
+INSERT INTO books(isbn, book_title, category, rental_price, status, author, publisher)
+VALUES('978-1-60129-456-2', 'To Kill a Mockingbird', 'Classic', 6.00, 'yes', 'Harper Lee', 'J.B. Lippincott & Co.');
+SELECT * FROM books;
+
+-- Task 2. Update an Existing Member's Address
+
+UPDATE members
+SET member_address = '125 Oak St'
+WHERE member_id = 'C103';
+
+-- Task 3 Delete the record with issued_id = 'IS121' from the issued_status table.
+
+DELETE FROM issued_status
+WHERE   issued_id =   'IS121';
+
+-- Task 4. Select all books issued by the employee with emp_id = 'E101'.
+
+SELECT * FROM issued_status
+WHERE issued_emp_id = 'E101'
+
+-- Task 5. Use GROUP BY to find members who have issued more than one book.
+
+SELECT
+    issued_emp_id,
+    COUNT(*)
+FROM issued_status
+GROUP BY 1
+HAVING COUNT(*) > 1
+
+-- Task 6. Used CTAS to generate new tables based on query results - each book and total book_issued_cnt**
+
+CREATE TABLE book_issued_cnt AS
+SELECT b.isbn, b.book_title, COUNT(ist.issued_id) AS issue_count
+FROM issued_status as ist
+JOIN books as b
+ON ist.issued_book_isbn = b.isbn
+GROUP BY b.isbn, b.book_title;
